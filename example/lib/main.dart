@@ -1,9 +1,12 @@
 import 'package:flutter_liveness_detection_randomized_plugin/index.dart';
 
 import 'face_match_screen.dart';
+import 'face_verification_service.dart';
 import 'helper.dart';
 
-void main() {
+void main() async {
+  WidgetsFlutterBinding.ensureInitialized();
+  await FaceVerificationService.init();
   runApp(const MaterialApp(
     debugShowCheckedModeBanner: false,
     home: FaceCompareScreen(),
