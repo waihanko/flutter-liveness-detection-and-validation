@@ -7,8 +7,8 @@ class CircularProgressWidget extends StatefulWidget {
     required this.current,
     this.height,
     this.width,
-    this.selectedColor,
-    this.unselectedColor,
+    this.activeStepColor,
+    this.inActiveStepColor,
     this.child,
     this.gradientColor,
     this.maxStep = 100,
@@ -24,8 +24,8 @@ class CircularProgressWidget extends StatefulWidget {
   final double heightLine;
   final double? height;
   final double? width;
-  final Color? selectedColor;
-  final Color? unselectedColor;
+  final Color? activeStepColor;
+  final Color? inActiveStepColor;
   final Widget? child;
   final Gradient? gradientColor;
   final Curve curve;
@@ -113,8 +113,8 @@ class _CircularProgressWidgetState extends State<CircularProgressWidget>
             child: CustomPaint(
               painter: CircularProgressPainter(
                 currentStep: _current,
-                selectedColor: widget.selectedColor,
-                unselectedColor: widget.unselectedColor,
+                activeStepColor: widget.activeStepColor,
+                inActiveStepColor: widget.inActiveStepColor,
                 gradientColor: widget.gradientColor,
                 maxStep: widget.maxStep,
                 widthLine: widget.widthLine,

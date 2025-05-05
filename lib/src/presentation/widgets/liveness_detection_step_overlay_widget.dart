@@ -12,6 +12,8 @@ class LivenessDetectionStepOverlayWidget extends StatefulWidget {
   final bool isDarkMode;
   final bool showDurationUiText;
   final int? duration;
+  final Color? inActiveStepColor;
+  final Color? activeStepColor;
 
   const LivenessDetectionStepOverlayWidget({super.key,
     required this.steps,
@@ -22,7 +24,10 @@ class LivenessDetectionStepOverlayWidget extends StatefulWidget {
     this.showCurrentStep = false,
     this.isDarkMode = true,
     this.showDurationUiText = false,
-    this.duration});
+    this.activeStepColor,
+    this.inActiveStepColor,
+    this.duration,
+  });
 
   @override
   State<LivenessDetectionStepOverlayWidget> createState() =>
@@ -57,7 +62,6 @@ class LivenessDetectionStepOverlayWidgetState
     super.initState();
     _initializeControllers();
     _initializeTimer();
-    debugPrint('showCurrentStep ${widget.showCurrentStep}');
   }
 
   void _initializeControllers() {
@@ -86,8 +90,8 @@ class LivenessDetectionStepOverlayWidgetState
 
   Widget _buildCircularIndicator() {
     return CircularProgressWidget(
-      unselectedColor: Colors.grey,
-      selectedColor: Colors.green,
+      inActiveStepColor: widget.inActiveStepColor?? Colors.grey,
+      activeStepColor: widget.activeStepColor?? Colors.green,
       heightLine: _heightLine,
       current: _currentStepIndicator,
       maxStep: _indicatorMaxStep,
@@ -173,7 +177,7 @@ class LivenessDetectionStepOverlayWidgetState
       crossAxisAlignment: CrossAxisAlignment.center,
       mainAxisSize: MainAxisSize.max,
       children: [
-        SizedBox(height: 12,),
+        const SizedBox(height: 12,),
         Row(
           crossAxisAlignment: CrossAxisAlignment.start,
           children: [
@@ -213,9 +217,9 @@ class LivenessDetectionStepOverlayWidgetState
 
           ],
         ),
-        SizedBox(height: 48,),
+        const SizedBox(height: 48,),
         _buildCircularCamera(),
-        SizedBox(height: 48,),
+        const SizedBox(height: 48,),
         Text(
           "Scan your face",
           style:
@@ -223,7 +227,7 @@ class LivenessDetectionStepOverlayWidgetState
               fontSize: 22,
               fontWeight: FontWeight.bold),
         ),
-        SizedBox(height: 12,),
+        const SizedBox(height: 12,),
         _buildFaceDetectionStatus(),
         const SizedBox(height: 16),
         widget.isDarkMode ? _buildLoaderDarkMode() : _buildLoaderLightMode(),
@@ -236,12 +240,12 @@ class LivenessDetectionStepOverlayWidgetState
             style: TextButton.styleFrom(
               backgroundColor: Colors.grey[300],
               foregroundColor: Colors.black,
-              padding: EdgeInsets.symmetric(horizontal: 16, vertical: 12),
+              padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 12),
               shape: RoundedRectangleBorder(
                 borderRadius: BorderRadius.circular(8),
               ),
             ),
-            child: Text("Cancel", style: TextStyle(
+            child: const Text("Cancel", style: TextStyle(
               color: Colors.blueAccent,
               fontWeight: FontWeight.w600,
               fontSize: 18
@@ -253,7 +257,6 @@ class LivenessDetectionStepOverlayWidgetState
   }
 
   Widget _buildCircularCamera() {
-    print(widget.aspectHeight);
     return ClipRect(
       child: Align(
         alignment: Alignment.center,
@@ -319,7 +322,6 @@ class LivenessDetectionStepOverlayWidgetState
     );
   }
 
-
   Widget _buildStepItem(BuildContext context, int index) {
     return Text(
       widget.steps[index].title,
@@ -346,14 +348,3 @@ class LivenessDetectionStepOverlayWidgetState
   }
 }
 
-class _CenterClipper extends CustomClipper<Rect> {
-  @override
-  Rect getClip(Size size) {
-    double clipHeight = 533.3333333333333;
-    double top = (size.height - clipHeight) / 2;
-    return Rect.fromLTWH(0, top, size.width, clipHeight);
-  }
-
-  @override
-  bool shouldReclip(CustomClipper<Rect> oldClipper) => false;
-}

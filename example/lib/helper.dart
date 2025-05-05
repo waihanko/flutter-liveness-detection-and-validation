@@ -28,8 +28,6 @@ abstract class Helper{
       blink: enabledSet.contains('blink') ? null : '',
       smile: enabledSet.contains('smile') ? null : '',
     );
-
-    print("Model is $model");
     return model;
   }
 

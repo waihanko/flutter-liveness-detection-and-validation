@@ -72,9 +72,8 @@ class _HomeViewState extends State<HomeView> {
                   context: context,
                   config: LivenessDetectionConfig(
                     isEnableMaxBrightness: true, // enable disable max brightness when taking face photo
-                    durationLivenessVerify: 600, // default duration value is 45 second
+                    durationLivenessVerify: 8000, // default duration value is 45 second
                     showDurationUiText: false, // show or hide duration remaining when perfoming liveness detection
-                    startWithInfoScreen: true, // show or hide tutorial screen
                     useCustomizedLabel: true, // set to true value for enable 'customizedLabel', set to false to use default label
                     // provide an empty string if you want to pass the liveness challenge
                     customizedLabel: Helper.getRandomLivenessModel(),

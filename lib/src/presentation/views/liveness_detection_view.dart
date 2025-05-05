@@ -36,7 +36,6 @@ class _LivenessDetectionScreenState extends State<LivenessDetectionView> {
   Timer? _timerToDetectFace;
 
   // Detection state variables
-  late bool _isInfoStepCompleted;
   bool _isProcessingStep = false;
   bool _faceDetectedState = false;
 
@@ -160,9 +159,6 @@ class _LivenessDetectionScreenState extends State<LivenessDetectionView> {
   }
 
   void _preInitCallBack() {
-    _isInfoStepCompleted = !widget.config.startWithInfoScreen;
-    debugPrint("Pre Init ${widget.config.customizedLabel.toString()}");
-
     shuffleListLivenessChallenge(
         list: widget.config.useCustomizedLabel &&
             widget.config.customizedLabel != null
@@ -174,10 +170,6 @@ class _LivenessDetectionScreenState extends State<LivenessDetectionView> {
     if (widget.config.isEnableMaxBrightness) {
       setApplicationBrightness(1.0);
     }
-    // Future.delayed(Duration(seconds: 4), () {
-    //   if (mounted) setState(() => _isInfoStepCompleted = true);
-    //   _startLiveFeed();
-    // },);
   }
 
   void _postFrameCallBack() async {
@@ -197,9 +189,7 @@ class _LivenessDetectionScreenState extends State<LivenessDetectionView> {
             element.lensDirection == CameraLensDirection.front),
       );
     }
-    if (!widget.config.startWithInfoScreen) {
-      _startLiveFeed();
-    }
+    _startLiveFeed();
 
     shuffleListLivenessChallenge(
         list: widget.config.useCustomizedLabel &&
@@ -420,20 +410,7 @@ class _LivenessDetectionScreenState extends State<LivenessDetectionView> {
   Widget build(BuildContext context) {
     return Scaffold(
       backgroundColor: widget.isDarkMode ? Colors.black : Colors.white,
-      body:  Stack(
-        children: [
-          _isInfoStepCompleted
-              ? _buildDetectionBody()
-              : LivenessDetectionTutorialScreen(
-            duration: widget.config.durationLivenessVerify ?? 45,
-            isDarkMode: widget.isDarkMode,
-            onStartTap: () {
-              if (mounted) setState(() => _isInfoStepCompleted = true);
-              _startLiveFeed();
-            },
-          ),
-        ],
-      ),
+      body:_buildDetectionBody(),
     );
   }
 
@@ -458,6 +435,8 @@ class _LivenessDetectionScreenState extends State<LivenessDetectionView> {
             aspectHeight: 300 * cameraAspectRatio,
             camera: CameraPreview(_cameraController!),
             key: _stepsKey,
+            activeStepColor: widget.config.activeStepColor,
+            inActiveStepColor: widget.config.inActiveStepColor,
             steps: widget.config.useCustomizedLabel
                 ? customizedLivenessLabel(widget.config.customizedLabel!)
                 : stepLiveness,

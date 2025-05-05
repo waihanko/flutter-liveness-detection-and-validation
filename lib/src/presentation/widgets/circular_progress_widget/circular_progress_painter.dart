@@ -6,8 +6,8 @@ class CircularProgressPainter extends CustomPainter {
   final double maxStep;
   final double widthLine;
   final double heightLine;
-  final Color? selectedColor;
-  final Color? unselectedColor;
+  final Color? activeStepColor;
+  final Color? inActiveStepColor;
   final Gradient? gradientColor;
 
   CircularProgressPainter({
@@ -15,8 +15,8 @@ class CircularProgressPainter extends CustomPainter {
     required this.widthLine,
     required this.heightLine,
     required this.currentStep,
-    required this.selectedColor,
-    required this.unselectedColor,
+    required this.activeStepColor,
+    required this.inActiveStepColor,
     required this.gradientColor,
   });
 
@@ -61,8 +61,8 @@ class CircularProgressPainter extends CustomPainter {
 
       final dashBrush = paint
         ..color = i < draw
-            ? selectedColor ?? Colors.red
-            : unselectedColor ?? Colors.yellow
+            ? activeStepColor ?? Colors.red
+            : inActiveStepColor ?? Colors.yellow
         ..style = PaintingStyle.stroke
         ..strokeCap = StrokeCap.round
         ..strokeWidth = widthLine;

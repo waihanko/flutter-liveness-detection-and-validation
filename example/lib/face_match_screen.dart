@@ -120,7 +120,7 @@ class _FaceCompareScreenState extends State<FaceCompareScreen> {
                       config: LivenessDetectionConfig(
                         isEnableMaxBrightness: true,
                         // enable disable max brightness when taking face photo
-                        durationLivenessVerify: 45,
+                        durationLivenessVerify: 800,
                         // default duration value is 45 second
                         showDurationUiText: true,
                         // show or hide tutorial screen
@@ -128,6 +128,10 @@ class _FaceCompareScreenState extends State<FaceCompareScreen> {
                         // set to true value for enable 'customizedLabel', set to false to use default label
                         customizedLabel: Helper.getRandomLivenessModel(
                             alwaysIncludeSmile: true),
+
+                        activeStepColor: Colors.green,
+
+                        inActiveStepColor: Color(0xFFCDD2DA)
                       ),
                       isEnableSnackBar: true,
                       // snackbar to notify either liveness is success or failed
