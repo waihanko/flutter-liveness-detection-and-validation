@@ -16,7 +16,6 @@ dependencies:
   camera: 0.10.6
   equatable: ^2.0.5
   image: ^4.0.15
-  lottie: ^2.4.0
   collection: ^1.18.0
   screen_brightness: ^2.1.2
 
