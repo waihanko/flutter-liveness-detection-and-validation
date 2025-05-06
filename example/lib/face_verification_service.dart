@@ -16,9 +16,9 @@ class FaceVerificationService {
 
   FaceVerificationService._internal();
 
-  /// Initializes the singleton instance
-  static Future<void> init() async {
-    _interpreter = await Interpreter.fromAsset('assets/models/facenet.tflite');
+  /// Initializes the singleton instance, model => facenet.tfflite
+  static Future<void> init({required String modelPath}) async {
+    _interpreter = await Interpreter.fromAsset(modelPath);
     _instance = FaceVerificationService._internal();
   }
 
@@ -33,6 +33,20 @@ class FaceVerificationService {
     return _instance!;
   }
 
+
+  /// Compare two faces and return a similarity score (0 to 1)
+  Future<double> compareFaces(image_lib.Image image1, image_lib.Image image2) async {
+    final embedding1 = await getEmbedding(image1);
+    final embedding2 = await getEmbedding(image2);
+
+    return cosineSimilarity(embedding1, embedding2);
+  }
+
+  /// Compare two face images and return true if they are similar
+  Future<bool> isSamePerson(image_lib.Image image1, image_lib.Image image2, {double threshold = 0.6}) async {
+    final similarity = await compareFaces(image1, image2);
+    return similarity > threshold;
+  }
 
   /// Detect and tightly crop the face
   Future<image_lib.Image?> detectAndCropFace(File imageFile) async {
