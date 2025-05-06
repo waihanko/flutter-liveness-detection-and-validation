@@ -126,7 +126,16 @@ class _FaceCompareScreenState extends State<FaceCompareScreen> {
                         // show or hide tutorial screen
                         useCustomizedLabel: true,
                         // set to true value for enable 'customizedLabel', set to false to use default label
-                        customizedLabel: Helper.getRandomLivenessModel(
+                        // customizedLabel: LivenessDetectionLabelModel(
+                        //   lookDown:  '',
+                        //   lookLeft: null,
+                        //   lookRight:  '',
+                        //   lookUp:  '',
+                        //   blink: '',
+                        //   smile:  '',
+                        //   lookStraight: null,
+                        // ),
+                          customizedLabel: Helper.getRandomLivenessModel(
                             alwaysIncludeSmile: true),
 
                         activeStepColor: Colors.green,
@@ -141,22 +150,26 @@ class _FaceCompareScreenState extends State<FaceCompareScreen> {
                       // enable dark/light mode
                       showCurrentStep:
                           true, // show number current step of liveness
-                    );
-                    if (mounted) {
-                      image_lib.Image? cropped =
-                          await faceService.detectAndCropFace(File(response!));
-                      embedding2 = await faceService.getEmbedding(cropped!);
-                      // image2 = File(response); // to show original image
-                      await faceService.convertImageToFile(
-                              cropped, "${DateTime.now()}_temp_image_2")
-                          .then(
-                        (value) => {
-                          setState(() {
-                            image2 = value;
-                          })
+                          onDetectionCompleted: (String? detectedFaceImage) async{
+                          print("Detected Face Link $detectedFaceImage");
+                          if (mounted) {
+                            image_lib.Image? cropped =
+                                await faceService.detectAndCropFace(File(detectedFaceImage!));
+                            embedding2 = await faceService.getEmbedding(cropped!);
+                            // image2 = File(response); // to show original image
+                            await faceService.convertImageToFile(
+                                cropped, "${DateTime.now()}_temp_image_2")
+                                .then(
+                                  (value) => {
+                                setState(() {
+                                  image2 = value;
+                                })
+                              },
+                            );
+                          }
+                          Navigator.pop(context);
                         },
-                      );
-                    }
+                    );
                   },
                   image: image2,
                   icon: Icons.sentiment_very_satisfied_rounded),

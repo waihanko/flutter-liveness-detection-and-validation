@@ -209,3 +209,39 @@ class LivenessThresholdHead extends LivenessDetectionThreshold{
     );
   }
 }
+
+class LivenessThresholdStraight extends LivenessDetectionThreshold {
+  final double maxYaw;   // headEulerAngleY: left/right
+  final double maxPitch; // headEulerAngleX: up/down
+
+  LivenessThresholdStraight({
+    this.maxYaw = 10.0,
+    this.maxPitch = 10.0,
+  }) : super() {
+    assert(maxYaw >= 0.0 && maxYaw <= 90.0, "Yaw must be between 0 and 90.");
+    assert(maxPitch >= 0.0 && maxPitch <= 90.0, "Pitch must be between 0 and 90.");
+  }
+
+  @override
+  Map<String, dynamic> toMap() {
+    return {
+      'maxYaw': maxYaw,
+      'maxPitch': maxPitch,
+    };
+  }
+
+  factory LivenessThresholdStraight.fromMap(Map<String, dynamic> map) {
+    return LivenessThresholdStraight(
+      maxYaw: map['maxYaw']?.toDouble() ?? 10.0,
+      maxPitch: map['maxPitch']?.toDouble() ?? 10.0,
+    );
+  }
+
+  @override
+  LivenessDetectionThreshold fromDict(Map<String, dynamic> map) {
+    return LivenessThresholdStraight.fromMap(map);
+  }
+
+  @override
+  String toString() => 'LivenessThresholdStraight(maxYaw: $maxYaw, maxPitch: $maxPitch)';
+}

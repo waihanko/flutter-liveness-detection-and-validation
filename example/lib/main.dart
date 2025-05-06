@@ -71,17 +71,31 @@ class _HomeViewState extends State<HomeView> {
                         .livenessDetection(
                   context: context,
                   config: LivenessDetectionConfig(
-                    isEnableMaxBrightness: true, // enable disable max brightness when taking face photo
-                    durationLivenessVerify: 8000, // default duration value is 45 second
-                    showDurationUiText: false, // show or hide duration remaining when perfoming liveness detection
-                    useCustomizedLabel: true, // set to true value for enable 'customizedLabel', set to false to use default label
+                    isEnableMaxBrightness: true,
+                    // enable disable max brightness when taking face photo
+                    durationLivenessVerify: 8000,
+                    // default duration value is 45 second
+                    showDurationUiText: false,
+                    // show or hide duration remaining when perfoming liveness detection
+                    useCustomizedLabel: true,
+                    // set to true value for enable 'customizedLabel', set to false to use default label
                     // provide an empty string if you want to pass the liveness challenge
                     customizedLabel: Helper.getRandomLivenessModel(),
                   ),
-                  isEnableSnackBar: true, // snackbar to notify either liveness is success or failed
-                  shuffleListWithSmileLast: true, // put 'smile' challenge always at the end of liveness challenge, if `useCustomizedLabel` is true, this automatically set to false
-                  isDarkMode: false, // enable dark/light mode
-                  showCurrentStep: true, // show number current step of liveness
+                  isEnableSnackBar: true,
+                  // snackbar to notify either liveness is success or failed
+                  shuffleListWithSmileLast: true,
+                  // put 'smile' challenge always at the end of liveness challenge, if `useCustomizedLabel` is true, this automatically set to false
+                  isDarkMode: false,
+                  // enable dark/light mode
+                  showCurrentStep: true,
+                  // show number current step of liveness
+                  onDetectionCompleted: (detectedFaceImage) {
+                    print("Detected Face Link $detectedFaceImage");
+                  setState(() {
+                  imgPath = detectedFaceImage; // result liveness
+                  });
+                  },
                 );
                 if (mounted) {
                   setState(() {

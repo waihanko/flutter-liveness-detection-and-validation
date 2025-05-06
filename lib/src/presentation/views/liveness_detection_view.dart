@@ -1,4 +1,3 @@
-// ignore_for_file: depend_on_referenced_packages
 import 'package:flutter/foundation.dart';
 import 'package:flutter_liveness_detection_randomized_plugin/index.dart';
 import 'package:flutter_liveness_detection_randomized_plugin/src/core/constants/liveness_detection_step_constant.dart';
@@ -13,11 +12,13 @@ class LivenessDetectionView extends StatefulWidget {
   final bool shuffleListWithSmileLast;
   final bool showCurrentStep;
   final bool isDarkMode;
+  final Function(String? detectedFaceImage) onDetectionCompleted;
 
   const LivenessDetectionView({
     super.key,
     required this.config,
     required this.isEnableSnackBar,
+    required this.onDetectionCompleted,
     this.isDarkMode = true,
     this.showCurrentStep = false,
     this.shuffleListWithSmileLast = true,
@@ -127,6 +128,13 @@ class _LivenessDetectionScreenState extends State<LivenessDetectionView> {
         ));
       }
 
+      if (label.lookStraight != "" && widget.config.useCustomizedLabel) {
+        customizedSteps.add(LivenessDetectionStepItem(
+          step: LivenessDetectionStep.lookStraight,
+          title: label.lookStraight ?? "Look Straight",
+        ));
+      }
+
     return customizedSteps;
   }
 
@@ -142,7 +150,6 @@ class _LivenessDetectionScreenState extends State<LivenessDetectionView> {
     _timerToDetectFace?.cancel();
     _timerToDetectFace = null;
     _cameraController?.dispose();
-    print("Dispose ${widget.config.customizedLabel}");
 
     shuffleListLivenessChallenge(
         list: widget.config.useCustomizedLabel &&
@@ -215,7 +222,7 @@ class _LivenessDetectionScreenState extends State<LivenessDetectionView> {
   void _startFaceDetectionTimer() {
     _timerToDetectFace = Timer(
         Duration(seconds: widget.config.durationLivenessVerify ?? 45),
-            () => _onDetectionCompleted(imgToReturn: null));
+            () => widget.onDetectionCompleted.call(null));
   }
 
   Future<void> _processCameraImage(CameraImage cameraImage) async {
@@ -329,6 +336,10 @@ class _LivenessDetectionScreenState extends State<LivenessDetectionView> {
       case LivenessDetectionStep.smile:
         await _handlingSmile(face: face, step: step);
         break;
+
+      case LivenessDetectionStep.lookStraight:
+        await _handlingLookStraight(face: face, step: step);
+        break;
     }
   }
 
@@ -350,7 +361,8 @@ class _LivenessDetectionScreenState extends State<LivenessDetectionView> {
         _startLiveFeed();
         return;
       }
-      _onDetectionCompleted(imgToReturn: clickedImage);
+      // _onDetectionCompleted(imgToReturn: clickedImage);
+      widget.onDetectionCompleted.call(clickedImage.path);
     } catch (e) {
       _startLiveFeed();
     }
@@ -599,4 +611,67 @@ class _LivenessDetectionScreenState extends State<LivenessDetectionView> {
       await _completeStep(step: step);
     }
   }
+
+  Future<void> _handlingLookStraight({
+    required Face face,
+    required LivenessDetectionStep step,
+  }) async {
+    final straightThreshold = FlutterLivenessDetectionRandomizedPlugin
+        .instance.thresholdConfig
+        .firstWhereOrNull((p0) => p0 is LivenessThresholdStraight)
+    as LivenessThresholdStraight?;
+
+    final angleY = face.headEulerAngleY ?? 0.0; // yaw (side)
+    final angleX = face.headEulerAngleX ?? 0.0; // pitch (up/down)
+
+    if (angleY.abs() < (straightThreshold?.maxYaw ?? 10.0) &&
+        angleX.abs() < (straightThreshold?.maxPitch ?? 10.0)) {
+      _startProcessing();
+      _completeStep(step: step);
+    }
+  }
+
+
+  Future<bool> onSteadyFaceDetected(XFile clickedImage) async {
+    // Convert the clicked image to InputImage for face detection
+    final inputImage = InputImage.fromFile(File(clickedImage.path));
+
+    // Create a face detector with options
+    final faceDetector = FaceDetector(
+      options: FaceDetectorOptions(performanceMode: FaceDetectorMode.accurate,
+        enableClassification: true, // ← VERY IMPORTANT!
+        enableLandmarks: true,      // Optional but helpful
+      ),
+    );
+
+    // Process the image and detect faces
+    final List<Face> faces = await faceDetector.processImage(inputImage);
+    if (faces.isEmpty) {
+      print("No face detected.");
+      return false; // No face detected, return false
+    }
+
+    // Get the first face from the list of detected faces
+    final face = faces.first;
+    final boundingBox = face.boundingBox;
+
+    // Check if the face is visible and steady
+    final isCheckHeadSteady = checkIsHeadSteady(face); // Use your logic here
+
+    if (!isCheckHeadSteady) {
+      print("Face is not visible or head is not steady.");
+      return false; // Either the face is not visible or head is not steady
+    }
+
+    print("Face is steady and visible.");
+    return true; // Face is steady and visible, return true
+  }
+
+  bool checkIsHeadSteady(Face face) {
+    const maxYaw = 10.0;  // left/right
+    const maxRoll = 10.0; // tilt
+    return (face.headEulerAngleY?.abs()??0) < maxYaw &&
+        (face.headEulerAngleZ?.abs()??0) < maxRoll;
+  }
+
 }

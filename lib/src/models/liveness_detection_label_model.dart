@@ -11,6 +11,7 @@ class LivenessDetectionLabelModel {
     String? lookLeft;
     String? lookRight;
     String? blink;
+    String? lookStraight;
 
     LivenessDetectionLabelModel({
         this.smile,
@@ -19,6 +20,7 @@ class LivenessDetectionLabelModel {
         this.lookLeft,
         this.lookRight,
         this.blink,
+        this.lookStraight,
     });
 
     factory LivenessDetectionLabelModel.fromJson(Map<String, dynamic> json) => LivenessDetectionLabelModel(
@@ -28,6 +30,7 @@ class LivenessDetectionLabelModel {
         lookLeft: json["lookLeft"],
         lookRight: json["lookRight"],
         blink: json["blink"],
+        lookStraight: json["lookStraight"],
     );
 
     Map<String, dynamic> toJson() => {
@@ -37,10 +40,11 @@ class LivenessDetectionLabelModel {
         "lookLeft": lookLeft,
         "lookRight": lookRight,
         "blink": blink,
+        "lookStraight": lookStraight,
     };
 
     @override
     String toString() {
-        return 'LivenessDetectionLabelModel(lookDown: $lookDown, lookLeft: $lookLeft, lookRight: $lookRight, lookUp: $lookUp, blink: $blink, smile: $smile)';
+        return 'LivenessDetectionLabelModel(lookDown: $lookDown, lookLeft: $lookLeft, lookRight: $lookRight, lookUp: $lookUp, blink: $blink, smile: $smile, lookStraight: $lookStraight)';
     }
 }
