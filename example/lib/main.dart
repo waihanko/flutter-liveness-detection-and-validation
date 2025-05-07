@@ -66,7 +66,7 @@ class _HomeViewState extends State<HomeView> {
           ElevatedButton.icon(
               icon: const Icon(Icons.camera_alt_rounded),
               onPressed: () async {
-                final String? response =
+
                     await FlutterLivenessDetectionRandomizedPlugin.instance
                         .livenessDetection(
                   context: context,
@@ -92,16 +92,14 @@ class _HomeViewState extends State<HomeView> {
                   // show number current step of liveness
                   onDetectionCompleted: (detectedFaceImage) {
                     print("Detected Face Link $detectedFaceImage");
-                  setState(() {
-                  imgPath = detectedFaceImage; // result liveness
-                  });
+                    if (mounted) {
+                      setState(() {
+                        imgPath = detectedFaceImage; // result liveness
+                      });
+                    }
                   },
                 );
-                if (mounted) {
-                  setState(() {
-                    imgPath = response; // result liveness
-                  });
-                }
+
               },
               label: const Text('Liveness Detection System')),
         ],

@@ -12,6 +12,7 @@ class LivenessDetectionView extends StatefulWidget {
   final bool shuffleListWithSmileLast;
   final bool showCurrentStep;
   final bool isDarkMode;
+  final String? title;
   final Function(String? detectedFaceImage) onDetectionCompleted;
 
   const LivenessDetectionView({
@@ -19,6 +20,7 @@ class LivenessDetectionView extends StatefulWidget {
     required this.config,
     required this.isEnableSnackBar,
     required this.onDetectionCompleted,
+    this.title,
     this.isDarkMode = true,
     this.showCurrentStep = false,
     this.shuffleListWithSmileLast = true,
@@ -453,6 +455,7 @@ class _LivenessDetectionScreenState extends State<LivenessDetectionView> {
                 ? customizedLivenessLabel(widget.config.customizedLabel!)
                 : stepLiveness,
             showCurrentStep: widget.showCurrentStep,
+            title: widget.title,
             onCompleted: () =>
                 Future.delayed(
                   const Duration(milliseconds: 500),

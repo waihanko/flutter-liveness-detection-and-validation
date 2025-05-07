@@ -14,6 +14,7 @@ class LivenessDetectionStepOverlayWidget extends StatefulWidget {
   final int? duration;
   final Color? inActiveStepColor;
   final Color? activeStepColor;
+  final String? title;
 
   const LivenessDetectionStepOverlayWidget({super.key,
     required this.steps,
@@ -27,6 +28,7 @@ class LivenessDetectionStepOverlayWidget extends StatefulWidget {
     this.activeStepColor,
     this.inActiveStepColor,
     this.duration,
+    this.title
   });
 
   @override
@@ -182,7 +184,7 @@ class LivenessDetectionStepOverlayWidgetState
           crossAxisAlignment: CrossAxisAlignment.start,
           children: [
             Text(
-              "Face verification",
+              widget.title?? "Face verification",
               style:
               TextStyle(color: widget.isDarkMode ? Colors.white : Colors.black,
                   fontSize: 22,

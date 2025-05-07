@@ -113,7 +113,6 @@ class _FaceCompareScreenState extends State<FaceCompareScreen> {
                       image2 = null;
                       isProcessImage2 = true;
                     });
-                    final String? response =
                         await FlutterLivenessDetectionRandomizedPlugin.instance
                             .livenessDetection(
                       context: context,
