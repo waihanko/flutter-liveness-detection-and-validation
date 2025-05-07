@@ -8,7 +8,6 @@ List<CameraDescription> availableCams = [];
 
 class LivenessDetectionView extends StatefulWidget {
   final LivenessDetectionConfig config;
-  final bool isEnableSnackBar;
   final bool shuffleListWithSmileLast;
   final bool showCurrentStep;
   final bool isDarkMode;
@@ -18,7 +17,6 @@ class LivenessDetectionView extends StatefulWidget {
   const LivenessDetectionView({
     super.key,
     required this.config,
-    required this.isEnableSnackBar,
     required this.onDetectionCompleted,
     this.title,
     this.isDarkMode = true,
@@ -368,20 +366,6 @@ class _LivenessDetectionScreenState extends State<LivenessDetectionView> {
     } catch (e) {
       _startLiveFeed();
     }
-  }
-
-  void _onDetectionCompleted({XFile? imgToReturn}) {
-    final String? imgPath = imgToReturn?.path;
-    if (widget.isEnableSnackBar) {
-      final snackBar = SnackBar(
-        content: Text(imgToReturn == null
-            ? 'Verification of liveness detection failed, please try again. (Exceeds time limit ${widget
-            .config.durationLivenessVerify ?? 45} second.)'
-            : 'Verification of liveness detection success!'),
-      );
-      ScaffoldMessenger.of(context).showSnackBar(snackBar);
-    }
-    Navigator.of(context).pop(imgPath);
   }
 
   void _resetSteps() {

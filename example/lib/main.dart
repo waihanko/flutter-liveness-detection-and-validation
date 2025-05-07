@@ -82,7 +82,6 @@ class _HomeViewState extends State<HomeView> {
                     // provide an empty string if you want to pass the liveness challenge
                     customizedLabel: Helper.getRandomLivenessModel(),
                   ),
-                  isEnableSnackBar: true,
                   // snackbar to notify either liveness is success or failed
                   shuffleListWithSmileLast: true,
                   // put 'smile' challenge always at the end of liveness challenge, if `useCustomizedLabel` is true, this automatically set to false

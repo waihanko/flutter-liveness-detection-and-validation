@@ -14,7 +14,6 @@ class FlutterLivenessDetectionRandomizedPlugin {
     String? title,
     required BuildContext context,
     required LivenessDetectionConfig config,
-    required bool isEnableSnackBar,
     required bool shuffleListWithSmileLast,
     required bool showCurrentStep,
     required bool isDarkMode,
@@ -25,7 +24,6 @@ class FlutterLivenessDetectionRandomizedPlugin {
         builder: (context) => LivenessDetectionView(
           config: config,
           title: title,
-          isEnableSnackBar: isEnableSnackBar,
           shuffleListWithSmileLast: shuffleListWithSmileLast,
           showCurrentStep: showCurrentStep,
           isDarkMode: isDarkMode,
@@ -33,7 +31,6 @@ class FlutterLivenessDetectionRandomizedPlugin {
         ),
       ),
     );
-    return capturedFacePath;
   }
 
   Future<String?> getPlatformVersion() {
