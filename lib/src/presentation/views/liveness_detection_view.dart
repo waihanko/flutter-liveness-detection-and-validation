@@ -354,13 +354,16 @@ class _LivenessDetectionScreenState extends State<LivenessDetectionView> {
       if (_cameraController == null || _isTakingPicture) return;
 
       if (mounted) setState(() => _isTakingPicture = true);
-      await _cameraController?.stopImageStream();
 
       final XFile? clickedImage = await _cameraController?.takePicture();
+      await _cameraController?.stopImageStream();
+
       if (clickedImage == null) {
         _startLiveFeed();
         return;
       }
+
+
       // _onDetectionCompleted(imgToReturn: clickedImage);
       widget.onDetectionCompleted.call(clickedImage.path);
     } catch (e) {
@@ -442,7 +445,7 @@ class _LivenessDetectionScreenState extends State<LivenessDetectionView> {
             title: widget.title,
             onCompleted: () =>
                 Future.delayed(
-                  const Duration(milliseconds: 500),
+                  const Duration(milliseconds: 1000),
                       () => _takePicture(),
                 ),
           ),
@@ -634,19 +637,16 @@ class _LivenessDetectionScreenState extends State<LivenessDetectionView> {
     // Process the image and detect faces
     final List<Face> faces = await faceDetector.processImage(inputImage);
     if (faces.isEmpty) {
-      print("No face detected.");
       return false; // No face detected, return false
     }
 
     // Get the first face from the list of detected faces
     final face = faces.first;
-    final boundingBox = face.boundingBox;
 
     // Check if the face is visible and steady
     final isCheckHeadSteady = checkIsHeadSteady(face); // Use your logic here
 
     if (!isCheckHeadSteady) {
-      print("Face is not visible or head is not steady.");
       return false; // Either the face is not visible or head is not steady
     }
 

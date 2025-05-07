@@ -40,10 +40,8 @@ class LivenessDetectionStepOverlayWidgetState
     extends State<LivenessDetectionStepOverlayWidget> {
   int get currentIndex => _currentIndex;
 
-  bool _isLoading = false;
   int _currentIndex = 0;
   double _currentStepIndicator = 0;
-  late final PageController _pageController;
   late Widget _circularProgressWidget;
 
   // Add timer and remaining duration variables
@@ -57,7 +55,6 @@ class LivenessDetectionStepOverlayWidgetState
     return 100 / stepLength;
   }
 
-  String get stepCounter => "$_currentIndex/${widget.steps.length}";
 
   @override
   void initState() {
@@ -67,7 +64,6 @@ class LivenessDetectionStepOverlayWidgetState
   }
 
   void _initializeControllers() {
-    _pageController = PageController(initialPage: 0);
     _circularProgressWidget = _buildCircularIndicator();
   }
 
@@ -103,14 +99,11 @@ class LivenessDetectionStepOverlayWidgetState
 
   @override
   void dispose() {
-    _pageController.dispose();
     _countdownTimer?.cancel();
     super.dispose();
   }
 
   Future<void> nextPage() async {
-    if (_isLoading) return;
-
     if (_currentIndex + 1 <= widget.steps.length - 1) {
       await _handleNextStep();
     } else {
@@ -119,27 +112,21 @@ class LivenessDetectionStepOverlayWidgetState
   }
 
   Future<void> _handleNextStep() async {
-    _showLoader();
     await Future.delayed(const Duration(milliseconds: 100));
-    await _pageController.nextPage(
-      duration: const Duration(milliseconds: 1),
-      curve: Curves.easeIn,
-    );
-    await Future.delayed(const Duration(seconds: 1));
-    _hideLoader();
     _updateState();
   }
 
   Future<void> _handleCompletion() async {
     _updateState();
-    await Future.delayed(const Duration(milliseconds: 500));
     widget.onCompleted();
   }
 
   void _updateState() {
     if (mounted) {
       setState(() {
-        _currentIndex++;
+        if (_currentIndex < widget.steps.length - 1) {
+                 _currentIndex++;
+        }
         _currentStepIndicator += _getStepIncrement(widget.steps.length);
         _circularProgressWidget = _buildCircularIndicator();
       });
@@ -147,7 +134,6 @@ class LivenessDetectionStepOverlayWidgetState
   }
 
   void reset() {
-    _pageController.jumpToPage(0);
     if (mounted) {
       setState(() {
         _currentIndex = 0;
@@ -155,14 +141,6 @@ class LivenessDetectionStepOverlayWidgetState
         _circularProgressWidget = _buildCircularIndicator();
       });
     }
-  }
-
-  void _showLoader() {
-    if (mounted) setState(() => _isLoading = true);
-  }
-
-  void _hideLoader() {
-    if (mounted) setState(() => _isLoading = false);
   }
 
   @override
@@ -187,7 +165,7 @@ class LivenessDetectionStepOverlayWidgetState
               widget.title?? "Face verification",
               style:
               TextStyle(color: widget.isDarkMode ? Colors.white : Colors.black,
-                  fontSize: 22,
+                  fontSize: 20,
                   fontWeight: FontWeight.bold),
             ),
             Spacer(),
@@ -208,7 +186,7 @@ class LivenessDetectionStepOverlayWidgetState
                   ),
                 ),
                 if(widget.showCurrentStep) Text(
-                  stepCounter,
+                  "${_currentIndex+1}/${widget.steps.length}",
                   style: TextStyle(
                       color: widget.isDarkMode
                           ? Colors.white
@@ -232,7 +210,6 @@ class LivenessDetectionStepOverlayWidgetState
         const SizedBox(height: 12,),
         _buildFaceDetectionStatus(),
         const SizedBox(height: 16),
-        widget.isDarkMode ? _buildLoaderDarkMode() : _buildLoaderLightMode(),
         SizedBox(
           width: double.infinity,
           child: TextButton(
@@ -314,39 +291,17 @@ class LivenessDetectionStepOverlayWidgetState
               .of(context)
               .size
               .width,
-          child: PageView.builder(
-            controller: _pageController,
-            itemCount: widget.steps.length,
-            itemBuilder: _buildStepItem,
+          child: Text(
+            widget.steps[_currentIndex].title,
+            key: ValueKey('step_$_currentIndex'),
+            textAlign: TextAlign.center,
+            style: const TextStyle(color: Colors.black, fontSize: 18, fontWeight: FontWeight.w500),
           ),
         )
       ],
     );
   }
 
-  Widget _buildStepItem(BuildContext context, int index) {
-    return Text(
-      widget.steps[index].title,
-      textAlign: TextAlign.center,
-        style:
-        TextStyle(color: widget.isDarkMode ? Colors.white : Colors.black, fontSize: 18, fontWeight: FontWeight.w500),
-    );
-  }
 
-  Widget _buildLoaderDarkMode() {
-    return Center(
-      child: CupertinoActivityIndicator(
-        color: !_isLoading ? Colors.transparent : Colors.white,
-      ),
-    );
-  }
-
-  Widget _buildLoaderLightMode() {
-    return Center(
-      child: CupertinoActivityIndicator(
-        color: _isLoading ? Colors.transparent : Colors.white,
-      ),
-    );
-  }
 }
 

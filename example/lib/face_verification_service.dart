@@ -23,7 +23,7 @@ class FaceVerificationService {
   }
 
   /// Check if the service is initialized
-  static bool get isInitialized => _instance != null && _interpreter != null;
+  static bool get isInitialized => _instance != null;
 
   /// Access the instance safely
   static FaceVerificationService get instance {

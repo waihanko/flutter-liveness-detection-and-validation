@@ -6,7 +6,7 @@ import 'helper.dart';
 
 void main() async {
   WidgetsFlutterBinding.ensureInitialized();
-  FaceVerificationService.init(modelPath: "assets/models/facenet.tflite");
+  await FaceVerificationService.init(modelPath: "assets/models/facenet.tflite");
   runApp(const MaterialApp(
     debugShowCheckedModeBanner: false,
     home: FaceCompareScreen(),
