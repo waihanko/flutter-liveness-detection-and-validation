@@ -368,6 +368,9 @@ class _LivenessDetectionScreenState extends State<LivenessDetectionView> {
       if(isFaceDetected == false){
         _resetSteps();
         _startLiveFeed();
+        setState(() {
+          _isTakingPicture = false;
+        });
         return;
       }
 

@@ -150,6 +150,10 @@ class _FaceCompareScreenState extends State<FaceCompareScreen> {
                           true, // show number current step of liveness
                           onDetectionCompleted: (String? detectedFaceImage) async{
                         debugPrint("Detected Face Link $detectedFaceImage");
+                        if(detectedFaceImage == null){
+                          debugPrint("Face Not Detected");
+                          return;
+                        }
                           if (mounted) {
                             Navigator.pop(context);
 
