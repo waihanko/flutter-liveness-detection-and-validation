@@ -363,6 +363,13 @@ class _LivenessDetectionScreenState extends State<LivenessDetectionView> {
         return;
       }
 
+      final isFaceDetected =
+      await MachineLearningKitHelper.instance.isFaceDetected(File(clickedImage.path));
+      if(isFaceDetected == false){
+        _resetSteps();
+        _startLiveFeed();
+        return;
+      }
 
       // _onDetectionCompleted(imgToReturn: clickedImage);
       widget.onDetectionCompleted.call(clickedImage.path);
@@ -455,34 +462,6 @@ class _LivenessDetectionScreenState extends State<LivenessDetectionView> {
     )
     ;
   }
-
-  Widget _buildCameraControls() {
-    return Padding(
-      padding: const EdgeInsets.all(16.0),
-      child: Row(
-        mainAxisAlignment: MainAxisAlignment.spaceEvenly,
-        children: [
-          IconButton(
-            icon: Icon(
-              Icons.flash_on,
-              color: Colors.white,
-            ),
-            onPressed: () async {},
-          ),
-          GestureDetector(
-            onTap: () => {},
-            child: Icon(
-              Icons.radio_button_on,
-              color: Colors.red,
-              size: 70,
-            ),
-          ),
-          const Icon(Icons.flip_camera_ios, color: Colors.green)
-        ],
-      ),
-    );
-  }
-
 
   Future<void> _handlingBlinkStep({
     required Face face,
@@ -660,5 +639,6 @@ class _LivenessDetectionScreenState extends State<LivenessDetectionView> {
     return (face.headEulerAngleY?.abs()??0) < maxYaw &&
         (face.headEulerAngleZ?.abs()??0) < maxRoll;
   }
+
 
 }

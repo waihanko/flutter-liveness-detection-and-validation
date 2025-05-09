@@ -149,11 +149,17 @@ class _FaceCompareScreenState extends State<FaceCompareScreen> {
                       showCurrentStep:
                           true, // show number current step of liveness
                           onDetectionCompleted: (String? detectedFaceImage) async{
-                          print("Detected Face Link $detectedFaceImage");
+                        debugPrint("Detected Face Link $detectedFaceImage");
                           if (mounted) {
+                            Navigator.pop(context);
+
                             image_lib.Image? cropped =
                                 await faceService.detectAndCropFace(File(detectedFaceImage!));
-                            embedding2 = await faceService.getEmbedding(cropped!);
+                            if(cropped == null){
+                              debugPrint("Face Not Detected");
+                              return;
+                            }
+                            embedding2 = await faceService.getEmbedding(cropped);
                             // image2 = File(response); // to show original image
                             await faceService.convertImageToFile(
                                 cropped, "${DateTime.now()}_temp_image_2")
@@ -165,7 +171,6 @@ class _FaceCompareScreenState extends State<FaceCompareScreen> {
                               },
                             );
                           }
-                          Navigator.pop(context);
                         },
                     );
                   },

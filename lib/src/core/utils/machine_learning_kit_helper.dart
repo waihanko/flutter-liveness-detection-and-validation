@@ -25,4 +25,17 @@ class MachineLearningKitHelper {
 
     return [];
   }
+
+  Future<bool> isFaceDetected(File imageFile) async {
+    final inputImage = InputImage.fromFile(imageFile);
+    final faceDetector = FaceDetector(
+      options: FaceDetectorOptions(performanceMode: FaceDetectorMode.accurate),
+    );
+
+    final List<Face> faces = await faceDetector.processImage(inputImage);
+    if (faces.isNotEmpty) return true;
+    return false;
+
+  }
+
 }
