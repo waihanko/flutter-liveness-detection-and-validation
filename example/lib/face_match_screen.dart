@@ -158,7 +158,7 @@ class _FaceCompareScreenState extends State<FaceCompareScreen> {
                             Navigator.pop(context);
 
                             image_lib.Image? cropped =
-                                await faceService.detectAndCropFace(File(detectedFaceImage!));
+                                await faceService.detectAndCropFace(File(detectedFaceImage));
                             if(cropped == null){
                               debugPrint("Face Not Detected");
                               return;

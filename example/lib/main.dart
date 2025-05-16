@@ -1,16 +1,15 @@
 import 'package:flutter_liveness_detection_randomized_plugin/index.dart';
 
-import 'face_match_screen.dart';
 import 'face_verification_service.dart';
 import 'helper.dart';
+import 'refrector/home_page.dart';
 
 void main() async {
   WidgetsFlutterBinding.ensureInitialized();
   await FaceVerificationService.init(modelPath: "assets/models/facenet.tflite");
-  runApp(const MaterialApp(
+  runApp( const MaterialApp(
     debugShowCheckedModeBanner: false,
-    home: FaceCompareScreen(),
-    // home: HomeView(),
+    home: HomePage(),
   ));
 }
 
@@ -104,5 +103,31 @@ class _HomeViewState extends State<HomeView> {
         ],
       )),
     );
+  }
+}
+
+
+// Custom painter for head mask
+class HeadMaskPainter extends CustomPainter {
+  @override
+  void paint(Canvas canvas, Size size) {
+    final paint = Paint()
+      ..color = Colors.black.withOpacity(0.5)
+      ..style = PaintingStyle.fill;
+
+    final center = Offset(size.width / 2, size.height / 2);
+    final radius = size.width * 0.4;
+
+    final path = Path()
+      ..addRect(Rect.fromLTWH(0, 0, size.width, size.height))
+      ..addOval(Rect.fromCircle(center: center, radius: radius))
+      ..fillType = PathFillType.evenOdd;
+
+    canvas.drawPath(path, paint);
+  }
+
+  @override
+  bool shouldRepaint(covariant CustomPainter oldDelegate) {
+    return false;
   }
 }
